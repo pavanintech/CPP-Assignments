@@ -34,8 +34,10 @@ class LinkedList {
     }
     void printLinkedList() {
         Node* temp = head;
+        cout << "The linked list becomes ";
         while (temp != nullptr) {
-            cout << temp -> data << " ";
+            cout << temp -> data;
+            cout << ((temp -> next != nullptr) ? " -> " : "");
             temp = temp -> next;
         }
         cout << endl;
