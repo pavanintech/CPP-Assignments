@@ -54,7 +54,7 @@ int main() {
     }
     cout << "The Original Sorted List: " << endl;
     displayList(head);
-    sortedInsert(head, data);
+    head = sortedInsert(head, data);
     cout << "The Modified Sorted List: " << endl;
     displayList(head);
     return 0;
