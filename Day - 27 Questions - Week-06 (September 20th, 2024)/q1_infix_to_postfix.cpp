@@ -2,56 +2,76 @@
 #include <stack>
 using namespace std;
 
-int precedence(char op) {
-    if (op == '^') return 3;
-    if (op == '*' || op == '/') return 2;
-    if (op == '+' || op == '-') return 1;
-    return 0;
+bool isOperator(char x) {
+    return (x == '^' || x == '*' || x == '-' || x == '+' || x == '/');
 }
 
-bool isOperator(char c) {
-    return c == '+' || c == '-' || c == '*' || c == '/' || c == '^';
+int precedence(char x) {
+    switch (x) {
+        case '^': return 3;
+        case '*': return 2;
+        case '/': return 2;
+        case '+': return 1;
+        case '-': return 1;
+        default: return 0;
+    }
 }
 
-string infixToPostfix(const string &infix) {
-    stack<char> st;
-    string postfix = "";
-    
-    for (char c : infix) {
-        if (isalnum(c)) {
-            postfix += c;
-        } else if (c == '(') {
-            st.push(c);
-        } else if (c == ')') {
-            while (!st.empty() && st.top() != '(') {
-                postfix += st.top();
-                st.pop();
+string infix_to_postfix_conversion(string infix) {
+    stack<char> stk;
+    string postfix_expr("");
+    string current_element("");
+    for (char ch: infix) {
+        if (ch == ' ') {
+            continue;
+        } else if (isdigit(ch) || (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')) {
+            current_element += ch;
+        } else {
+            if (!current_element.empty()) {
+                postfix_expr += current_element + " ";
+                current_element = "";
             }
-            st.pop();
-        } else if (isOperator(c)) {
-            while (!st.empty() && precedence(st.top()) >= precedence(c)) {
-                postfix += st.top();
-                st.pop();
+            if (ch == '(') {
+                stk.push(ch);
+            } else if (ch == ')') {
+                while (!stk.empty() && stk.top() != '(') {
+                    postfix_expr += stk.top();
+                    postfix_expr += " ";
+                    stk.pop();
+                }
+                stk.pop();
+            } else if (isOperator(ch)) {
+                while (!stk.empty() && precedence(stk.top()) >= precedence(ch)) {
+                    postfix_expr += stk.top();
+                    postfix_expr += " ";
+                    stk.pop();
+                }
+                stk.push(ch);
             }
-            st.push(c);
         }
     }
     
-    while (!st.empty()) {
-        postfix += st.top();
-        st.pop();
+    if (!current_element.empty()) {
+        postfix_expr += current_element + " ";
     }
     
-    return postfix;
+    while (!stk.empty()) {
+        postfix_expr += stk.top();
+        postfix_expr += " ";
+        stk.pop();
+    }
+    
+    return postfix_expr;
 }
 
 int main() {
-    string infix;
-    cout << "Enter infix expression: ";
-    cin >> infix;
+    string infix_expr;
+    cout << "Enter Infix Expression: ";
+    getline(cin, infix_expr);
     
-    string postfix = infixToPostfix(infix);
-    cout << "Postfix Expression: " << postfix << endl;
+    string postfix_expr;
+    postfix_expr = infix_to_postfix_conversion(infix_expr);
+    cout << "Postfix Expression: " << postfix_expr << endl;
     
     return 0;
 }
